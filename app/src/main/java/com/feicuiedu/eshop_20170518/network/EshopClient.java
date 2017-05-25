@@ -1,5 +1,14 @@
 package com.feicuiedu.eshop_20170518.network;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 import okhttp3.Call;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -32,5 +41,56 @@ public class EshopClient {
                 .url(BASE_URL+"/category")
                 .build();
         return client.newCall(request);
+    }
+
+    public Call getHomeBanner(){
+        Request request = new Request.Builder()
+                .get()
+                .url(BASE_URL + "/home/data")
+                .build();
+        return client.newCall(request);
+    }
+
+    public Call getHomeCategory(){
+        Request request = new Request.Builder()
+                .get()
+                .url(BASE_URL + "/home/category")
+                .build();
+        return client.newCall(request);
+    }
+
+    public Bitmap getBitmapFromAddress(String Url) {
+        URL url = null;
+        HttpURLConnection conn = null;
+        byte[] imagebytes = null;
+        try {
+            url = new URL(Url);
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setConnectTimeout(5000);
+            //获取服务器返回回来的流
+            InputStream is = conn.getInputStream();
+            imagebytes = getBytes(is);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return BitmapFactory.decodeByteArray(imagebytes, 0, imagebytes != null ? imagebytes.length : 0);
+    }
+
+    private byte[] getBytes(InputStream is) {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        int len = 0;
+        try {
+            while ((len = is.read(buffer)) != -1) {
+                bos.write(buffer, 0, len);
+            }
+            is.close();
+            bos.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        byte[] result = bos.toByteArray();
+        return result;
     }
 }

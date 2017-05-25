@@ -10,6 +10,7 @@ import com.feicuiedu.eshop_20170518.R;
 import com.feicuiedu.eshop_20170518.base.BaseActivity;
 import com.feicuiedu.eshop_20170518.base.utils.TestFragment;
 import com.feicuiedu.eshop_20170518.feature.category.CategoryFragment;
+import com.feicuiedu.eshop_20170518.feature.home.HomeFragment;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
 
@@ -21,7 +22,7 @@ public class EShopMainActivity extends BaseActivity {
     FrameLayout mLayoutContainer;
     @BindView(R.id.bottom_bar)
     BottomBar mBottomBar;
-    private Fragment mHomeFragment;
+    private HomeFragment mHomeFragment;
     private CategoryFragment mCategoryFragment;
     private Fragment mCartFragment;
     private Fragment mMineFragment;
@@ -36,7 +37,7 @@ public class EShopMainActivity extends BaseActivity {
                 switch (tabId) {
                     case R.id.tab_home:
                         if (mHomeFragment == null) {
-                            mHomeFragment = TestFragment.newInstance("HomeFragment", null);
+                            mHomeFragment = HomeFragment.newInstance("HomeFragment", null);
                         }
                         switchFragment(mHomeFragment);
                         break;
@@ -72,7 +73,7 @@ public class EShopMainActivity extends BaseActivity {
 
     private void retrieveFragment() {
         FragmentManager manager = getSupportFragmentManager();
-        mHomeFragment = manager.findFragmentByTag("HomeFragment");
+        mHomeFragment = (HomeFragment) manager.findFragmentByTag(HomeFragment.class.getName());
         mCategoryFragment = (CategoryFragment) manager.findFragmentByTag(CategoryFragment.class.getName());
         mCartFragment = manager.findFragmentByTag("CartFragment");
         mMineFragment = manager.findFragmentByTag("MineFragment");

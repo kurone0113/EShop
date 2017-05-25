@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,10 +13,11 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.feicuiedu.eshop_20170518.R;
 import com.feicuiedu.eshop_20170518.base.BaseFragment;
+import com.feicuiedu.eshop_20170518.base.wrapper.ToastWrapper;
+import com.feicuiedu.eshop_20170518.base.wrapper.ToolBarWrapper;
 import com.feicuiedu.eshop_20170518.network.EshopClient;
 import com.feicuiedu.eshop_20170518.network.core.UICallBack;
 import com.feicuiedu.eshop_20170518.network.entity.CategoryBase;
@@ -96,20 +96,18 @@ public class CategoryFragment extends BaseFragment implements AdapterView.OnItem
 
     @Override
     protected void paramInitialize() {
-        toolbarInitialize();
+        new ToolBarWrapper(this).setCustomTitle(R.string.category_title);
         categoryAdapter = new CategoryAdapter();
         childrenAdapter = new ChildrenAdapter();
         mLvListCategory.setAdapter(categoryAdapter);
         mLvListChildren.setAdapter(childrenAdapter);
-        if (data != null) {
-
-        } else {
+        if (data == null) {
             Call call = EshopClient.getInstance().getCategory();
             call.enqueue(new UICallBack() {
 
                 @Override
                 public void onFailureInUi(@NonNull Call call, @NonNull IOException e) {
-                    Toast.makeText(getContext(), "请求失败" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    ToastWrapper.show("请求失败" + e.getMessage());
                 }
 
                 @Override
@@ -120,7 +118,7 @@ public class CategoryFragment extends BaseFragment implements AdapterView.OnItem
                             data = rsp.getData();
                             categoryAdapter.reset(data);
                             updateData(0);
-                            Toast.makeText(getContext(), "数据条数：" + data.size(), Toast.LENGTH_SHORT).show();
+                            ToastWrapper.show("数据条数：" + data.size());
                         }
                     }
                 }
@@ -140,15 +138,6 @@ public class CategoryFragment extends BaseFragment implements AdapterView.OnItem
         childrenAdapter.reset(categoryAdapter.getItem(position).getChildren());
     }
 
-    private void toolbarInitialize() {
-        setHasOptionsMenu(true);
-        AppCompatActivity activity = (AppCompatActivity) getActivity();
-        activity.setSupportActionBar(mToolBar);
-        activity.getSupportActionBar().setDisplayShowTitleEnabled(false);
-        activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mToolBarTitle.setText(R.string.category_title);
-    }
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.fragment_category, menu);
@@ -161,7 +150,7 @@ public class CategoryFragment extends BaseFragment implements AdapterView.OnItem
         }
         if (item.getItemId() == R.id.menu_search) {
             //TODO:功能待实现
-            Toast.makeText(getActivity(), "搜索", Toast.LENGTH_SHORT).show();
+            ToastWrapper.show("搜索");
         }
         return true;
     }
@@ -193,7 +182,7 @@ public class CategoryFragment extends BaseFragment implements AdapterView.OnItem
                 childrenAdapter.reset(children);
                 break;
             case R.id.list_children:
-                Toast.makeText(getContext(), childrenAdapter.getItem(position).getName(), Toast.LENGTH_SHORT).show();
+                ToastWrapper.show(childrenAdapter.getItem(position).getName());
                 break;
         }
     }
